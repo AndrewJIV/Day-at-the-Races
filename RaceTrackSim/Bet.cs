@@ -42,9 +42,10 @@ namespace RaceTrackSim
             return -_amount;
         }
 
-        public string GetDescription()
+        public static string GetDescription()
         {
-            return "";
+            string text = ("Joe has bet $" + be + " on hound #" + houndNum);
+            return _txtBet1.Text;
         }
 
     }

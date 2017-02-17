@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -13,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+
 
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -113,7 +115,7 @@ namespace RaceTrackSim
             {
 
 
-                int bet = int.Parse(_txtBet1.Text);
+                int bet = int.Parse(_txtbetAmount.Text);
                 int houndNum = int.Parse(_comboBoxHound.SelectedItem as string);
                 bool betPlaced;
 
@@ -129,13 +131,16 @@ namespace RaceTrackSim
                         BetPlaced = true;
                     }
                 }
+
+                Bet.GetDescription();
+               
             }
 
             else if (_radioBtnBob.IsChecked == true)
             {
 
 
-                int bet = int.Parse(_txtBet2.Text);
+                int bet = int.Parse(_txtbetAmount.Text);
                 int houndNum = int.Parse(_comboBoxHound.SelectedItem as string);
                 bool betPlaced;
 
@@ -151,13 +156,15 @@ namespace RaceTrackSim
                         BetPlaced = true;
                     }
                 }
+
+                _txtBet2.Text = ("Bob has bet $" + bet + " on hound #" + houndNum);
             }
 
             else 
             {
 
 
-                int bet = int.Parse(_txtBet3.Text);
+                int bet = int.Parse(_txtbetAmount.Text);
                 int houndNum = int.Parse(_comboBoxHound.SelectedItem as string);
                 bool betPlaced;
 
@@ -173,6 +180,8 @@ namespace RaceTrackSim
                         BetPlaced = true;
                     }
                 }
+
+                _txtBet3.Text = ("Anna has bet $" + bet + " on hound #" + houndNum);
             }
 
 
@@ -188,30 +197,33 @@ namespace RaceTrackSim
 
         }
 
-        private void OnRaceTimerTick(object sender, object e)
+        private async void OnRaceTimerTick(object sender, object e)
         {
             foreach (Greyhound hound in _raceHoundList)
             {
-                if(hound.Run())
+                if (hound.Run())
                 {
                     _tmDanceTimer.Stop();
 
                     int winningHound = _raceHoundList.IndexOf(hound) + 1;
 
-                    foreach(Bettor bettor in _crtSelBettor)
+                    var dialog = new MessageDialog("Hound #"+winningHound+" won!");
+                    await dialog.ShowAsync();
+
+                    foreach (Bettor bettor in _crtSelBettor)
                     {
                         bettor.Collect(winningHound);
 
                     }
 
-                    foreach(Greyhound _hound in _raceHoundList)
+                    foreach (Greyhound _hound in _raceHoundList)
                     {
                         _hound.TakeStartingPosition();
                     }
 
                 }
-                
-            } 
+
+            }
         }
     }
 }
